@@ -1,0 +1,36 @@
+<table class="tasks">
+    <thead>
+      <tr><th>№</th><th>n</th><th>Статус</th><th>Прогрес</th><th>Воркер</th><th>Результат</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for t in tasks %}
+    <tr>
+      <td class="num">{{ t.id }}</td>
+      <td class="num">{{ t.n }}</td>
+      <td><span class="status s-{{ t.status }}">{{ statuses[t.status][0] }}</span></td>
+      <td>
+        {% if t.wait %}
+          <span class="text-muted">місце в черзі {{ t.wait[0] }}, ~{{ t.wait[1] }} с</span>
+        {% else %}
+          <div class="bar"><div style="width: {{ t.progress }}%"></div></div><span class="num small">{{ t.progress }}%</span>
+        {% endif %}
+      </td>
+      <td>{{ t.worker or '—' }}</td>
+      <td class="small">
+        {% if t.result %}сума <span class="num">{{ t.result.sum }}</span> · {{ t.result.seconds }} с{% endif %}
+        {{ t.error or '' }}
+      </td>
+      <td class="text-end">
+        {% if t.status in ('queued', 'running') %}
+        <form method="post" action="/tasks/{{ t.id }}/cancel">
+          <button class="link-btn">скасувати</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-muted">Задач ще немає</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p class="text-muted small mt-2">Таблицю оновив сервер {{ server_name }}</p>

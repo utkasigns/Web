@@ -1,0 +1,76 @@
+name: web
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: matrixdb
+      POSTGRES_USER: matrix
+      POSTGRES_PASSWORD: matrix
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U matrix -d matrixdb"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app1:
+    build: ./app
+    environment:
+      DB_HOST: db
+      APP_NAME: app-1
+      SECRET_KEY: change-me-secret
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: admin
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app2:
+    build: ./app
+    environment:
+      DB_HOST: db
+      APP_NAME: app-2
+      SECRET_KEY: change-me-secret
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: admin
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker1:
+    build: ./worker
+    environment:
+      DB_HOST: db
+      WORKER_NAME: worker-1
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker2:
+    build: ./worker
+    environment:
+      DB_HOST: db
+      WORKER_NAME: worker-2
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - app1
+      - app2
+
+volumes:
+  pgdata:

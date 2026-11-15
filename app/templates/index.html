@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="mb-5">
+  <h1 class="h4 mb-1">Нова задача</h1>
+  <p class="text-muted mb-3">Сервер створить дві випадкові матриці n×n, а вільний воркер їх перемножить.</p>
+  <form method="post" action="/tasks" class="d-flex gap-2 align-items-center flex-wrap">
+    <label for="n">n =</label>
+    <input class="form-control num" style="width: 140px" type="number" id="n" name="n" min="2" max="{{ max_n }}" required>
+    <button class="btn btn-accent">Запустити</button>
+    <span class="text-muted small ms-2">від 2 до {{ max_n }}, не більше {{ max_active }} активних задач</span>
+  </form>
+</section>
+
+<h2 class="h5 mb-3">Мої задачі</h2>
+<div id="tasks">{% include '_tasks.html' %}</div>
+
+<script>
+setInterval(async () => {
+  const response = await fetch('/tasks/table');
+  if (response.ok) {
+    document.getElementById('tasks').innerHTML = await response.text();
+  }
+}, 2000);
+</script>
+{% endblock %}
