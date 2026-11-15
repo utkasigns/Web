@@ -10,10 +10,6 @@ def index():
     return 'Відповів сервер на порту ' + str(port)
 
 
-@app.route('/hello')
-def hello():
-    return 'Привіт!'
-
 if __name__ == '__main__':
     app.run(port=port)
 
