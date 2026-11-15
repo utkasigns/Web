@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h5 class="card-title">Вхід</h5>
+      <form method="post" action="/login">
+        <input class="form-control mb-2" name="username" placeholder="Логін" required>
+        <input class="form-control mb-2" name="password" type="password" placeholder="Пароль" required>
+        <button class="btn btn-accent w-100">Увійти</button>
+      </form>
+    </div></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h5 class="card-title">Реєстрація</h5>
+      <form method="post" action="/register">
+        <input class="form-control mb-2" name="username" placeholder="Логін" minlength="3" required>
+        <input class="form-control mb-2" name="password" type="password" placeholder="Пароль" minlength="4" required>
+        <button class="btn btn-outline-accent w-100">Зареєструватися</button>
+      </form>
+    </div></div>
+  </div>
+</div>
+{% endblock %}
