@@ -60,7 +60,7 @@ def alive_workers():
 
 def seconds_per_op():
     row = run(
-        "SELECT avg(extract(epoch FROM finished_at - started_at) / (n * n * n)) AS k FROM ("
+        "SELECT sum(extract(epoch FROM finished_at - started_at)) / sum(n * n * n) AS k FROM ("
         "SELECT n, started_at, finished_at FROM tasks WHERE status = 'done' "
         "ORDER BY finished_at DESC LIMIT 20) recent",
         fetch='one',

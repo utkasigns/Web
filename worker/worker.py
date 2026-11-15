@@ -7,7 +7,7 @@ from db import connect
 from matrix import multiply
 
 NAME = os.environ.get('WORKER_NAME', socket.gethostname())
-TIME_LIMIT = int(os.environ.get('TIME_LIMIT', 120))
+TIME_LIMIT = int(os.environ.get('TIME_LIMIT', 300))
 
 
 class Cancelled(Exception):
