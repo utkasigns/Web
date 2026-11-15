@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <title>Множення матриць</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@400;600&display=swap">
+  <style>
+        :root { --paper: #f1f5f9; --ink: #0f172a; --muted: #64748b; --line: #d8e0ea; --accent: #be185d; --accent-dark: #9d174d; --running: #1d4ed8; --done: #15803d; --warn: #b45309; --danger: #b91c1c; }
+    body { background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; }
+    .num { font-family: 'IBM Plex Mono', monospace; }
+    .topbar { border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 40px; }
+    .topbar a { color: var(--ink); text-decoration: none; margin-left: 20px; }
+    .topbar .brand { margin-left: 0; font-weight: 600; }
+    .btn, .form-control, .alert, .card, .badge { border-radius: 3px; box-shadow: none; }
+    .card { border: 1px solid var(--line); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: #22473d; color: #fff; }
+    .tasks { width: 100%; border-collapse: collapse; }
+    .tasks th { font-weight: 400; color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--ink); padding: 8px 12px 8px 0; }
+    .tasks td { border-bottom: 1px solid var(--line); padding: 12px 12px 12px 0; vertical-align: middle; }
+    .bar { display: inline-block; width: 140px; height: 6px; background: var(--line); margin-right: 8px; vertical-align: middle; }
+    .bar div { height: 100%; background: var(--accent); }
+    .status::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: var(--muted); }
+    .s-running::before { background: #2f6fb0; }
+    .s-done::before { background: var(--accent); }
+    .s-cancelled::before { background: #c8901e; }
+    .s-timeout::before, .s-failed::before { background: #b23a2e; }
+    .link-btn { background: none; border: none; padding: 0; color: #b23a2e; text-decoration: underline; }
+    footer { color: var(--muted); font-size: 13px; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <div class="container d-flex justify-content-between">
+      <a class="brand" href="/">Множення матриць</a>
+      {% if user %}
+      <div>
+        <span>{{ user.username }}</span>
+        {% if user.is_admin %}<a href="/admin">адмінка</a>{% endif %}
+        <a href="/logout">вийти</a>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+  <main class="container">
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="container my-5">Сторінку віддав сервер {{ server_name }}</footer>
+</body>
+</html>
