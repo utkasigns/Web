@@ -44,6 +44,7 @@ services:
 
   worker1:
     build: ./worker
+    image: matrix-worker
     environment:
       DB_HOST: db
       WORKER_NAME: worker-1
@@ -53,9 +54,23 @@ services:
 
   worker2:
     build: ./worker
+    image: matrix-worker
     environment:
       DB_HOST: db
       WORKER_NAME: worker-2
+    depends_on:
+      db:
+        condition: service_healthy
+
+  scaler:
+    build: ./scaler
+    environment:
+      DB_HOST: db
+      WORKER_IMAGE: matrix-worker
+      NETWORK: web_default
+      MAX_AUTO: 2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       db:
         condition: service_healthy
