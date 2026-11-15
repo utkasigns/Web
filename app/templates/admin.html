@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block head %}<meta http-equiv="refresh" content="3">{% endblock %}
+{% block content %}
+<h4 class="mb-3">Панель адміністратора</h4>
+<div class="row g-3 mb-4">
+  <div class="col"><div class="card"><div class="card-body">
+    <div class="text-muted">Живі воркери</div><div class="fs-3">{{ alive }} / {{ max_workers }}</div>
+  </div></div></div>
+  <div class="col"><div class="card"><div class="card-body">
+    <div class="text-muted">У черзі</div><div class="fs-3">{{ counts.get('queued', 0) }}</div>
+  </div></div></div>
+  <div class="col"><div class="card"><div class="card-body">
+    <div class="text-muted">Виконується</div><div class="fs-3">{{ counts.get('running', 0) }}</div>
+  </div></div></div>
+  <div class="col"><div class="card"><div class="card-body">
+    <div class="text-muted">Готово</div><div class="fs-3">{{ counts.get('done', 0) }}</div>
+  </div></div></div>
+</div>
+
+<h5>Воркери</h5>
+<table class="table bg-white mb-4">
+  <thead><tr><th>Ім'я</th><th>Стан</th><th>Задача</th><th>Виконано задач</th><th>Останній сигнал</th></tr></thead>
+  <tbody>
+  {% for w in workers %}
+  <tr>
+    <td>{{ w.name }}</td>
+    <td>
+      {% if not w.alive %}<span class="badge bg-danger">не відповідає</span>
+      {% elif w.status == 'busy' %}<span class="badge bg-primary">зайнятий</span>
+      {% else %}<span class="badge bg-success">вільний</span>{% endif %}
+    </td>
+    <td>{{ w.task_id or '' }}</td>
+    <td>{{ w.tasks_done }}</td>
+    <td>{{ w.ago }} с тому</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="text-muted">Воркерів немає</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h5>Активні задачі всіх користувачів</h5>
+<table class="table bg-white">
+  <thead><tr><th>№</th><th>Користувач</th><th>n</th><th>Статус</th><th>Прогрес</th><th>Воркер</th></tr></thead>
+  <tbody>
+  {% for t in tasks %}
+  <tr>
+    <td>{{ t.id }}</td>
+    <td>{{ t.username }}</td>
+    <td>{{ t.n }}</td>
+    <td><span class="badge bg-{{ statuses[t.status][1] }}">{{ statuses[t.status][0] }}</span></td>
+    <td>{{ t.progress }}%</td>
+    <td>{{ t.worker or '' }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="text-muted">Активних задач немає</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
